@@ -1,0 +1,69 @@
+server:
+  port: 8090
+  http2:
+    enabled: true
+
+spring:
+  application:
+    name: notification-service
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: reactive
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  webflux:
+    base-path: /api/notification
+
+CONFLUENT:
+  URL:
+  USERNAME:
+  PASSWORD:
+  SCHEMA_REG_URL:
+  SCHEMA_REG_USER:
+
+app:
+  kafka:
+    topics:
+      NOTIFICATION_RECEIVED_REQUEST: NOTIFICATION_RECEIVED_REQUEST_TOPIC
+      NOTIFICATION_STORED_REQUEST: NOTIFICATION_STORED_REQUEST_TOPIC
+    group_id:
+      NOTIFICATION_SERVICE_GROUP: NOTIFICATION_SERVICE_GROUP
+    listeners:
+      NOTIFICATION_RECEIVED_REQUEST_LISTENER: NOTIFICATION_RECEIVED_REQUEST_TOPIC_REQUEST_LISTENER
+
+  couchbase:
+    connection-string: couchbase://localhost
+    user-name: Administrator
+    password: password
+    bucketName: notification
+    scopeName: dev
+
+camel:
+  component:
+    twilio:
+      account-sid:
+      enabled:
+      password:
+      username:
+events:
+  channels:
+    EMAIL:
+      endpoint: endpoint
+      configuration:
+        contentType: "text/html"
+        from: from
+        mail_smtp_auth: true
+        mail_smtp_ssl_enable: true
+        mail_smtp_starttls_enable: true
+    API:
+      endpoint:
+      configuration:
+        contentType: "text/html"
+
+
+
+
+
+
+
