@@ -104,7 +104,7 @@ public class NotificationSenderService {
                 in.setHeader(notificationUtil.formatChannelKey(k), v);
             });
 
-            in.setBody(notificationUtil.toBody(payload.getBody(), payload.getType(), map));
+            in.setBody(notificationUtil.toBody(payload.getBody(), payload.getType(), channel.getChannelType(), map));
 
             Producer producer = endpoint.createProducer();
             producer.start();
@@ -113,6 +113,31 @@ public class NotificationSenderService {
 
         } catch (Exception e) {
             log.error("Error: {}", e.getMessage());
+        }
+    }
+
+    public void sendNotificationSMS() {
+        try {
+//            CamelContext context = new DefaultCamelContext();
+//            TwilioComponent twilio = context.getComponent("twilio", TwilioComponent.class);
+//            twilio.setUsername("ACf14d3e055275111abf5f437a4cc732a8");
+//            twilio.setPassword("208ee068b7a0808ec54deb8e016e8a9e");
+//            context.addRoutes(new RouteBuilder() {
+//                @Override
+//                public void configure() throws Exception {
+//                    from("direct:message")
+//                            .setHeader("CamelTwilioTo", constant(new PhoneNumber("+6582858590")))
+//                            .setHeader("CamelTwilioFrom", constant(new PhoneNumber("+16206340037")))
+//                            .setHeader("CamelTwilioBody", constant("This is Twilio testing for POC"))
+//                            .to("twilio://message/creator");
+//                }
+//            });
+//            context.start();
+//            ProducerTemplate producer = context.createProducerTemplate();
+//            producer.sendBody("direct:message", "This is Twilio testing for POC");
+//            context.stop();
+        } catch (Exception exception) {
+            log.error("Error: {}", exception.getMessage());
         }
     }
 
