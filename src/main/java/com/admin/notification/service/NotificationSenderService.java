@@ -141,4 +141,62 @@ public class NotificationSenderService {
         }
     }
 
+public void sendCamelNotificationEdited(final String channelType, final List<String> names) {
+
+        List<String> namesList = Objects.requireNonNullElse(names, new ArrayList<>());
+
+        Flux.fromIterable(namesList).flatMap(name -> {
+            try {
+                byte[] array = Files.readAllBytes(Paths.get(name));
+                final Input input = new Input("application.yaml", array);
+                return Mono.just(input);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }).collectList().subscribe(inputList -> {
+
+            final CamelContext context = new DefaultCamelContext();
+            try {
+                context.addRoutes(new RouteBuilder() {
+                    @Override
+                    public void configure() {
+
+                        from("direct:start")
+                                .to(channelConfiguration.getChannels().get(channelType).get(CHANNEL_END_POINT).toString())
+                                .log("Notification sent with content ${in.body}");
+                    }
+                });
+
+                context.start();
+                Endpoint endpoint = context.getEndpoint("direct:start");
+
+                Exchange exchange = endpoint.createExchange();
+                AttachmentMessage in = exchange.getIn(AttachmentMessage.class);
+
+                inputList.forEach(input -> {
+                    DefaultAttachment attachment = new DefaultAttachment(new ByteArrayDataSource(input.bytes, MediaType.APPLICATION_OCTET_STREAM_VALUE));
+                    attachment.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + input.name);
+                    in.addAttachmentObject(input.name, attachment);
+                });
+
+
+                in.setHeader("subject", "This is Test");
+                ((Map<String, Object>) channelConfiguration.getChannels().get(channelType).get(CHANNEL_CONFIGURATION)).forEach((k, v) -> {
+                    in.setHeader(notificationUtil.formatChannelKey(k), v);
+                });
+
+                in.setBody("Test");
+
+                Producer producer = endpoint.createProducer();
+                producer.start();
+                producer.process(exchange);
+                context.stop();
+
+            } catch (Exception e) {
+                log.error("Error: {}", e.getMessage());
+            }
+        });
+    }
+
 }
