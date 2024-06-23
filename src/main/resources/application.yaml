@@ -15,30 +15,11 @@ spring:
     default-property-inclusion: NON_NULL
   webflux:
     base-path: /api/notification
-
-CONFLUENT:
-  URL:
-  USERNAME:
-  PASSWORD:
-  SCHEMA_REG_URL:
-  SCHEMA_REG_USER:
-
-app:
-  kafka:
-    topics:
-      NOTIFICATION_RECEIVED_REQUEST: NOTIFICATION_RECEIVED_REQUEST_TOPIC
-      NOTIFICATION_STORED_REQUEST: NOTIFICATION_STORED_REQUEST_TOPIC
-    group_id:
-      NOTIFICATION_SERVICE_GROUP: NOTIFICATION_SERVICE_GROUP
-    listeners:
-      NOTIFICATION_RECEIVED_REQUEST_LISTENER: NOTIFICATION_RECEIVED_REQUEST_TOPIC_REQUEST_LISTENER
-
-  couchbase:
-    connection-string: couchbase://localhost
-    user-name: Administrator
-    password: password
-    bucketName: notification
-    scopeName: dev
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: notification-service
 
 camel:
   component:
