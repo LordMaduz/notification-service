@@ -1,0 +1,11 @@
+from("direct:start")
+                            .to("smtp://smtp.gmail.com:465?username=U&password=P"
+                                    + "&mail.smtp.starttls.enable=true&debugMode=true&mail.smtp.auth=true&"
+                                    + "mail.smtp.ssl.enable=true&contentType=text/html")
+                            .log("Email sent with content ${in.body}");
+
+in.setHeader("subject", "POC Email Testing !");
+            in.setHeader("to", "");
+            in.setHeader("from", "");
+            in.setHeader(Exchange.CONTENT_TYPE, "text/html; charset=UTF-8");
+
